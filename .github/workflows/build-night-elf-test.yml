@@ -1,0 +1,51 @@
+name: Build Night Elf Test
+
+on:
+  push:
+    branches:
+      - feature/night-elf-races
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test-build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - name: Check out test branch
+        uses: actions/checkout@v4
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Build Android APK and desktop JAR
+        run: |
+          chmod +x gradlew
+          ./gradlew --no-daemon :android:assembleDebug :desktop:release
+
+      - name: Upload Android APK
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: night-elf-android-apk
+          path: android/build/outputs/apk/debug/*.apk
+          if-no-files-found: error
+
+      - name: Upload Desktop JAR
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: night-elf-desktop-jar
+          path: desktop/build/libs/*.jar
+          if-no-files-found: error
