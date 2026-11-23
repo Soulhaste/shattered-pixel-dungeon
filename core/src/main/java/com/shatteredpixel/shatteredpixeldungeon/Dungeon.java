@@ -283,6 +283,7 @@ public class Dungeon {
 		
 		Badges.reset();
 		
+		hero.race = GamesInProgress.selectedRace;
 		GamesInProgress.selectedClass.initHero( hero );
 	}
 
