@@ -30,6 +30,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Rankings;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroRace;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Journal;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.ui.ActionIndicator;
@@ -87,6 +88,7 @@ public class HeroSelectScene extends PixelScene {
 	private RenderedTextBlock heroName; //only on landscape
 	private RenderedTextBlock heroDesc; //only on landscape
 	private StyledButton startBtn;
+	private StyledButton raceBtn;
 	private IconButton infoButton;
 	private IconButton btnOptions;
 	private GameOptions optionsPane;
@@ -168,6 +170,19 @@ public class HeroSelectScene extends PixelScene {
 		startBtn.textColor(Window.TITLE_COLOR);
 		add(startBtn);
 		startBtn.visible = startBtn.active = false;
+
+		raceBtn = new StyledButton(Chrome.Type.GREY_BUTTON_TR, ""){
+			@Override
+			protected void onClick() {
+				super.onClick();
+				GamesInProgress.selectedRace = GamesInProgress.selectedRace == HeroRace.HUMAN
+						? HeroRace.NIGHT_ELF : HeroRace.HUMAN;
+				updateRaceButton();
+			}
+		};
+		raceBtn.setSize(95, 18);
+		add(raceBtn);
+		updateRaceButton();
 
 		infoButton = new IconButton(Icons.get(Icons.INFO)){
 			@Override
@@ -298,6 +313,9 @@ public class HeroSelectScene extends PixelScene {
 			startBtn.setSize(startBtn.reqWidth()+8, 21);
 			startBtn.setPos(insets.left + (leftArea - startBtn.width())/2f, title.top() + uiHeight - startBtn.height());
 			align(startBtn);
+			raceBtn.setRect(insets.left + (leftArea - raceBtn.width())/2f,
+					startBtn.top() - raceBtn.height() - 2, raceBtn.width(), raceBtn.height());
+			align(raceBtn);
 
 			btnFade = new IconButton(Icons.CHEVRON.get()){
 				@Override
@@ -411,6 +429,10 @@ public class HeroSelectScene extends PixelScene {
 		}
 	}
 
+	private void updateRaceButton() {
+		raceBtn.text("Race: " + GamesInProgress.selectedRace.title());
+	}
+
 	private void setSelectedHero(HeroClass cl){
 		GamesInProgress.selectedClass = cl;
 		GamesInProgress.randomizedClass = false;
@@ -465,6 +487,9 @@ public class HeroSelectScene extends PixelScene {
 
 			startBtn.setPos((Camera.main.width - startBtn.width())/2f, (Camera.main.height - insets.bottom - HeroBtn.HEIGHT + 2 - startBtn.height()));
 			PixelScene.align(startBtn);
+			raceBtn.setRect((Camera.main.width - raceBtn.width())/2f,
+					startBtn.top() - raceBtn.height() - 2, raceBtn.width(), raceBtn.height());
+			align(raceBtn);
 
 			infoButton.visible = infoButton.active = true;
 			infoButton.setPos(startBtn.right(), startBtn.top());
@@ -513,6 +538,8 @@ public class HeroSelectScene extends PixelScene {
 			btnFade.enable(alpha != 0);
 			btnFade.icon().alpha(alpha);
 		}
+		raceBtn.enable(alpha != 0);
+		raceBtn.alpha(alpha);
 		startBtn.enable(alpha != 0);
 		startBtn.alpha(alpha);
 		btnExit.enable(btnExit.visible && alpha != 0);
@@ -565,6 +592,7 @@ public class HeroSelectScene extends PixelScene {
 	private class HeroBtn extends StyledButton {
 
 		private HeroClass cl;
+		private HeroRace renderedRace;
 
 		private static final int MIN_WIDTH = 20;
 		private static final int HEIGHT = 24;
@@ -573,14 +601,19 @@ public class HeroSelectScene extends PixelScene {
 			super(Chrome.Type.GREY_BUTTON_TR, "");
 
 			this.cl = cl;
+			this.renderedRace = GamesInProgress.selectedRace;
 
-			icon(new Image(cl.spritesheet(), 0, 90, 12, 15));
+			icon(new Image(cl.spritesheet(GamesInProgress.selectedRace), 0, 90, 12, 15));
 
 		}
 
 		@Override
 		public void update() {
 			super.update();
+			if (renderedRace != GamesInProgress.selectedRace) {
+				icon.copy(new Image(cl.spritesheet(GamesInProgress.selectedRace), 0, 90, 12, 15));
+				renderedRace = GamesInProgress.selectedRace;
+			}
 			if (cl != GamesInProgress.selectedClass){
 				if (!cl.isUnlocked()){
 					icon.brightness(0.1f);

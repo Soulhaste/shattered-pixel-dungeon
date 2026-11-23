@@ -293,6 +293,20 @@ public enum HeroClass {
 		}
 	}
 
+	public String spritesheet(HeroRace race) {
+		if (race == HeroRace.NIGHT_ELF) {
+			switch (this) {
+				case WARRIOR: return Assets.Sprites.NIGHT_ELF_WARRIOR;
+				case MAGE: return Assets.Sprites.NIGHT_ELF_MAGE;
+				case ROGUE: return Assets.Sprites.NIGHT_ELF_ROGUE;
+				case HUNTRESS: return Assets.Sprites.NIGHT_ELF_HUNTRESS;
+				case DUELIST: return Assets.Sprites.NIGHT_ELF_DUELIST;
+				case CLERIC: return Assets.Sprites.NIGHT_ELF_CLERIC;
+			}
+		}
+		return spritesheet();
+	}
+
 	public String spritesheet() {
 		switch (this) {
 			case WARRIOR: default:

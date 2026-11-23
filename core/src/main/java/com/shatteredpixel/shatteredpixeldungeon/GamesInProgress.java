@@ -22,6 +22,7 @@
 package com.shatteredpixel.shatteredpixeldungeon;
 
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroRace;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.watabou.utils.Bundle;
@@ -42,6 +43,7 @@ public class GamesInProgress {
 	public static int curSlot;
 	
 	public static HeroClass selectedClass;
+	public static HeroRace selectedRace = HeroRace.HUMAN;
 	public static boolean randomizedClass = false;
 	
 	private static final String GAME_FOLDER = "game%d";
@@ -157,6 +159,7 @@ public class GamesInProgress {
 		info.ht = Dungeon.hero.HT;
 		info.shld = Dungeon.hero.shielding();
 		info.heroClass = Dungeon.hero.heroClass;
+		info.heroRace = Dungeon.hero.race;
 		info.subClass = Dungeon.hero.subClass;
 		info.armorTier = Dungeon.hero.tier();
 		
@@ -195,6 +198,7 @@ public class GamesInProgress {
 		public int ht;
 		public int shld;
 		public HeroClass heroClass;
+		public HeroRace heroRace = HeroRace.HUMAN;
 		public HeroSubClass subClass;
 		public int armorTier;
 		

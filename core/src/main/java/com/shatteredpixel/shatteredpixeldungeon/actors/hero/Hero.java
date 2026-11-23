@@ -211,6 +211,7 @@ public class Hero extends Char {
 	private static final float HUNGER_FOR_SEARCH	= 6f;
 	
 	public HeroClass heroClass = HeroClass.ROGUE;
+	public HeroRace race = HeroRace.HUMAN;
 	public HeroSubClass subClass = HeroSubClass.NONE;
 	public ArmorAbility armorAbility = null;
 	public ArrayList<LinkedHashMap<Talent, Integer>> talents = new ArrayList<>();
@@ -292,6 +293,7 @@ public class Hero extends Char {
 	}
 
 	private static final String CLASS       = "class";
+	private static final String RACE        = "race";
 	private static final String SUBCLASS    = "subClass";
 	private static final String ABILITY     = "armorAbility";
 
@@ -308,6 +310,7 @@ public class Hero extends Char {
 		super.storeInBundle( bundle );
 
 		bundle.put( CLASS, heroClass );
+		bundle.put( RACE, race );
 		bundle.put( SUBCLASS, subClass );
 		bundle.put( ABILITY, armorAbility );
 		Talent.storeTalentsInBundle( bundle, this );
@@ -336,6 +339,8 @@ public class Hero extends Char {
 		super.restoreFromBundle( bundle );
 
 		heroClass = bundle.getEnum( CLASS, HeroClass.class );
+		race = bundle.contains( RACE ) ? bundle.getEnum( RACE, HeroRace.class ) : HeroRace.HUMAN;
+		if (race == null) race = HeroRace.HUMAN;
 		subClass = bundle.getEnum( SUBCLASS, HeroSubClass.class );
 		armorAbility = (ArmorAbility)bundle.get( ABILITY );
 		Talent.restoreTalentsFromBundle( bundle, this );
@@ -356,6 +361,8 @@ public class Hero extends Char {
 		info.ht = bundle.getInt( Char.TAG_HT );
 		info.shld = bundle.getInt( Char.TAG_SHLD );
 		info.heroClass = bundle.getEnum( CLASS, HeroClass.class );
+		info.heroRace = bundle.contains( RACE ) ? bundle.getEnum( RACE, HeroRace.class ) : HeroRace.HUMAN;
+		if (info.heroRace == null) info.heroRace = HeroRace.HUMAN;
 		info.subClass = bundle.getEnum( SUBCLASS, HeroSubClass.class );
 		Belongings.preview( info, bundle );
 	}

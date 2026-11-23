@@ -26,6 +26,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.HeroDisguise;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroRace;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.watabou.gltextures.SmartTexture;
 import com.watabou.gltextures.TextureCache;
@@ -52,7 +53,7 @@ public class HeroSprite extends CharSprite {
 	public HeroSprite() {
 		super();
 		
-		texture( Dungeon.hero.heroClass.spritesheet() );
+		texture( Dungeon.hero.heroClass.spritesheet(Dungeon.hero.race) );
 		updateArmor();
 		
 		link( Dungeon.hero );
@@ -64,7 +65,7 @@ public class HeroSprite extends CharSprite {
 	}
 
 	public void disguise(HeroClass cls){
-		texture( cls.spritesheet() );
+		texture( cls.spritesheet(Dungeon.hero.race) );
 		updateArmor();
 	}
 	
@@ -176,16 +177,20 @@ public class HeroSprite extends CharSprite {
 
 	public static Image avatar( Hero hero ){
 		if (hero.buff(HeroDisguise.class) != null){
-			return avatar(hero.buff(HeroDisguise.class).getDisguise(), hero.tier());
+			return avatar(hero.buff(HeroDisguise.class).getDisguise(), hero.race, hero.tier());
 		} else {
-			return avatar(hero.heroClass, hero.tier());
+			return avatar(hero.heroClass, hero.race, hero.tier());
 		}
 	}
 	
 	public static Image avatar( HeroClass cl, int armorTier ) {
+		return avatar(cl, HeroRace.HUMAN, armorTier);
+	}
+
+	public static Image avatar( HeroClass cl, HeroRace race, int armorTier ) {
 		
 		RectF patch = tiers().get( armorTier );
-		Image avatar = new Image( cl.spritesheet() );
+		Image avatar = new Image( cl.spritesheet(race) );
 		RectF frame = avatar.texture.uvRect( 1, 0, FRAME_WIDTH, FRAME_HEIGHT );
 		frame.shift( patch.left, patch.top );
 		avatar.frame( frame );
